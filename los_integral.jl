@@ -1,4 +1,4 @@
-Using Distributed
+using Distributed
 
 function nuclear_bulge(d,b,l)
 	 z = d*sin(b*d2r)
