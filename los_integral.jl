@@ -1,6 +1,6 @@
 Using Distributed
 
-function nuclear_bulge(d,l,b)
+function nuclear_bulge(d,b,l)
 	 z = d*sin(b*d2r)
 	 x = Rsun - d*cos(b*d2r)*cos(l*d2r)
 	 y = -d*cos(b*d2r)*sin(l*d2r)
@@ -20,12 +20,12 @@ function nuclear_bulge(d,l,b)
 		  nsd = 1.97226e+22*3e+11*(1000*r)^(-10)*exp(-abs(z)/0.045))
 	 else
 		  nsd = 0
+	 end
 
 	 return nsc + nsd
+end
 
-function los(M)
-	anglos =  @distributed (+) for d = 8:0.01:8.5
-		nuclear_bulge(d,M[1],M[2])	
+A = [ [b,l] for b=-89.75:0.5:89.75, l=-179.75:0.5:179.75 ]
 
-A = [ [b,l] for b=0:0.5:179.5, l=0:0.5:359.5 ]
-
+jfactor =  @distributed (+) for d = 8:0.01:8.5
+	pmap(cos(A[1])*nuclear_bulge(d,A[1],A[2]),A)
