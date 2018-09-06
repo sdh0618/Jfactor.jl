@@ -1,6 +1,6 @@
 using Distributed
 
-function nuclear_bulge(M)
+@everywhere function nuclear_bulge(M)
 	d2r = pi/180
 	Rsun = 8.25
        	b=M[1]
@@ -30,8 +30,10 @@ function nuclear_bulge(M)
 	return cos(b)*(nsc + nsd)
 end
 
-A = [ [b,l] for b=-89.75:0.5:89.75, l=-179.75:0.5:179.75 ]
+A = [ [b,l,d] for b=-89.75:0.5:89.75, l=-179.75:0.5:179.75, d=8:0.01:8.5 ]
 
-jfactor =  @distributed (+) for d = 8:0.01:8.5
-	pmap(nuclear_bulge,A)
+for i in 8:0.01:8.5
+global d = i
+global jfactor
+jfactor = pmap(nuclear_bulge,A)
 end
